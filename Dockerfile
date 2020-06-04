@@ -2,6 +2,7 @@ FROM debian:stable-slim as builder
 
 RUN set -x && \
     # install build prerequisites
+    apt-get update && \
     apt-get install -y --no-install-recommends \
       bzip2 \
       ca-certificates \
