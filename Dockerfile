@@ -34,13 +34,13 @@ RUN set -x && \
     cd /src/pypy/pypy/goal && \
     python2 ../../rpython/bin/rpython -Ojit targetpypystandalone --withoutmod-micronumpy --withoutmod-cpyext && \
     mkdir -p /src/pypy-intermediate && \
-    cp -v pypy3-c libpypy3-c.so /src/pypy-intermediate/ && \
+    cp -v pypy-c libpypy-c.so /src/pypy-intermediate/ && \
     # build proper from latest stable 3.x release using pypy
     cd /src/pypy && \
     BRANCH_PYPY_3x_LATEST_STABLE=$(hg log --rev="tag()" --template="{tags}\n" | tr ' ' '\n' | grep "release-pypy3\." | grep -v "rc" | sort -r | head -1) && \
     hg update ${BRANCH_PYPY_3x_LATEST_STABLE} && \
     cd /src/pypy/pypy/goal && \
-    /src/pypy-intermediate/pypy3-c ../../rpython/bin/rpython -Ojit targetpypystandalone && \
+    /src/pypy-intermediate/pypy-c ../../rpython/bin/rpython -Ojit targetpypystandalone && \
     # package
     cd /src/pypy/pypy/tool/release && \
     python package.py --archive-name pypy --targetdir /src/pypyout.tar.bz2
