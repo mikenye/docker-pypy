@@ -64,7 +64,7 @@ RUN set -x && \
       zlib1g-dev \
       && \
     # install pypy bootstrap
-    tar xvf /src/pypy2bootstrap.tar.bz2 -C /opt
+    tar xvf /src/pypy2bootstrap.tar.bz2 -C /opt && \
     # get source for pypy
     hg clone https://foss.heptapod.net/pypy/pypy /src/pypy && \
     # build proper from latest stable 3.x release using bootstrap pypy
