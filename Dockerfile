@@ -25,6 +25,9 @@ RUN set -x && \
       tk-dev \
       zlib1g-dev \
       && \
+    pip install \
+        pycparser \
+        && \
     # get source for pypy
     hg clone https://foss.heptapod.net/pypy/pypy /src/pypy && \
     # build pypy bootstrap from latest stable 2.7 release
