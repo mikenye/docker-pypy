@@ -29,14 +29,19 @@ RUN set -x && \
     pip install \
       pycparser \
       && \
-    # get source for pypy
+    # get latest stable 2.7 release of pypy
     hg clone https://foss.heptapod.net/pypy/pypy /src/pypy && \
-    # build pypy bootstrap from latest stable 2.7 release
     cd /src/pypy && \
     BRANCH_PYPY_27_LATEST_STABLE=$(hg log --rev="tag()" --template="{tags}\n" | tr ' ' '\n' | grep "release-pypy2\.7" | grep -v "rc" | sort -r | head -1) && \
-    hg update ${BRANCH_PYPY_27_LATEST_STABLE} && \
+    hg update ${BRANCH_PYPY_27_LATEST_STABLE}
+
+# build pypy bootstrap from latest stable 2.7 release
+RUN set -x && \
     cd /src/pypy/pypy/goal && \
-    python2 ../../rpython/bin/rpython -Ojit targetpypystandalone --withoutmod-micronumpy --withoutmod-cpyext && \
+    python2 ../../rpython/bin/rpython -Ojit targetpypystandalone --withoutmod-micronumpy --withoutmod-cpyext
+
+# package pypy bootstrap
+RUN set -x && \
     cd /src/pypy/pypy/tool/release && \
     python package.py --without-_tkinter --without-gdbm --archive-name pypy2-bootstrap --targetdir /src/pypy2bootstrap.tar.bz2
 
