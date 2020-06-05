@@ -37,6 +37,7 @@ RUN set -x && \
 
 # build pypy bootstrap from latest stable 2.7 release
 RUN set -x && \
+    apt-get install --no-install-recommends python-dev && \
     cd /src/pypy/pypy/goal && \
     python2 ../../rpython/bin/rpython -Ojit targetpypystandalone --withoutmod-micronumpy --withoutmod-cpyext
 
@@ -74,18 +75,23 @@ RUN set -x && \
       && \
     # install pypy bootstrap
     tar xvf /src/pypy2bootstrap.tar.bz2 -C /opt && \
-    # get source for pypy
+    # get latest stable 3.x release of pypy
     hg clone https://foss.heptapod.net/pypy/pypy /src/pypy && \
-    # build proper from latest stable 3.x release using bootstrap pypy
     cd /src/pypy && \
     BRANCH_PYPY_3x_LATEST_STABLE=$(hg log --rev="tag()" --template="{tags}\n" | tr ' ' '\n' | grep "release-pypy3\." | grep -v "rc" | sort -r | head -1) && \
-    hg update ${BRANCH_PYPY_3x_LATEST_STABLE} && \
+    hg update ${BRANCH_PYPY_3x_LATEST_STABLE}
+
+# build pypy using bootstrap pypy
+RUN set -x && \
     cd /src/pypy/pypy/goal && \
-    /opt/pypy2-bootstrap/bin/pypy ../../rpython/bin/rpython -Ojit targetpypystandalone && \
-    # package
+    /opt/pypy2-bootstrap/bin/pypy ../../rpython/bin/rpython -Ojit targetpypystandalone
+
+# package final pypy
+RUN set -x && \
     cd /src/pypy/pypy/tool/release && \
     /opt/pypy2-bootstrap/bin/pypy package.py --archive-name pypy --targetdir /src/pypyfinal.tar.bz2
 
+# build final image
 FROM debian:stable-slim as final
 
 COPY --from=pypy_builder /src/pypyfinal.tar.bz2 /src/pypyfinal.tar.bz2
