@@ -37,7 +37,7 @@ RUN set -x && \
 
 # build pypy bootstrap from latest stable 2.7 release
 RUN set -x && \
-    apt-get install --no-install-recommends python-dev && \
+    apt-get install --no-install-recommends -y python-dev && \
     cd /src/pypy/pypy/goal && \
     python2 ../../rpython/bin/rpython -Ojit targetpypystandalone --withoutmod-micronumpy --withoutmod-cpyext
 
