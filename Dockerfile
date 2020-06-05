@@ -13,6 +13,7 @@ RUN set -x && \
       libgdbm-dev \
       liblzma-dev \
       libncursesw5-dev \
+      libpython2.7-dev \
       libsqlite3-dev \
       libssl-dev \
       libunwind-dev \
