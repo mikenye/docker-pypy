@@ -13,13 +13,13 @@ RUN set -x && \
       libgdbm-dev \
       liblzma-dev \
       libncursesw5-dev \
-      libpython2.7-dev \
       libsqlite3-dev \
       libssl-dev \
       libunwind-dev \
       make \
       mercurial \
       pkg-config \
+      python-dev \
       python-pip \
       python2 \
       tar \
@@ -37,7 +37,6 @@ RUN set -x && \
 
 # build pypy bootstrap from latest stable 2.7 release
 RUN set -x && \
-    apt-get install --no-install-recommends -y python-dev && \
     cd /src/pypy/pypy/goal && \
     python2 ../../rpython/bin/rpython -Ojit targetpypystandalone --withoutmod-micronumpy --withoutmod-cpyext
 
