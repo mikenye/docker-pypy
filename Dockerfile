@@ -28,6 +28,8 @@ RUN set -x && \
       && \
     pip install \
       pycparser \
+      wheel \
+      pyconfig \
       && \
     # get latest stable 2.7 release of pypy
     hg clone https://foss.heptapod.net/pypy/pypy /src/pypy && \
@@ -43,7 +45,7 @@ RUN set -x && \
 # package pypy bootstrap
 RUN set -x && \
     cd /src/pypy/pypy/tool/release && \
-    python package.py --without-_tkinter --without-gdbm --archive-name pypy2-bootstrap --targetdir /src/pypy2bootstrap.tar.bz2
+    python package.py --without-cffi --archive-name pypy2-bootstrap --targetdir /src/pypy2bootstrap.tar.bz2
 
 FROM debian:stable-slim as pypy_builder
 
@@ -56,6 +58,8 @@ RUN set -x && \
       bzip2 \
       ca-certificates \
       gcc \
+      python3 \
+      python3-dev \
       libbz2-dev \
       libexpat1-dev \
       libffi-dev \
