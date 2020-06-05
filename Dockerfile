@@ -21,6 +21,7 @@ RUN set -x && \
       pkg-config \
       python-dev \
       python-pip \
+      python-setuptools \
       python2 \
       tar \
       tk-dev \
