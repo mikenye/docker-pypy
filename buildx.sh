@@ -16,7 +16,7 @@ function build_image() {
     done
 
     # Get latest arch-specific version
-    docker pull mikenye/pypy:latest_${BUILD_ARCHLABEL}
+    docker pull mikenye/pypy:latest${BUILD_ARCHLABEL}
 
     # Get version of python that pypy is built on (x.x.x):
     PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2)
