@@ -17,7 +17,8 @@ function build_image() {
 
     # Get latest arch-specific version
     docker pull mikenye/pypy:latest_${BUILD_ARCHLABEL}
-    # Get version of python that pypy is built in:
+
+    # Get version of python that pypy is built on (x.x.x):
     local PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2)
     # Get version of pypy:
     local PYPYVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep PyPy | cut -d " " -f 2)
@@ -31,7 +32,44 @@ function build_image() {
         n=$((n+1))
         sleep 1
     done
-    
+
+    # Create version string
+    local VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
+
+    # build & push version-specific arch-specific
+    local n=0
+    until [ "$n" -ge "$TOTALTRIES" ]; do
+        docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:${VERSION} --progress plain --push . && break
+        n=$((n+1))
+        sleep 1
+    done
+
+    # Get version of python that pypy is built on (x.x):
+    local PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2 | cut -d "." -f 1,2)
+    # Create version string
+    local VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
+
+    # build & push version-specific arch-specific
+    local n=0
+    until [ "$n" -ge "$TOTALTRIES" ]; do
+        docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:${VERSION} --progress plain --push . && break
+        n=$((n+1))
+        sleep 1
+    done
+
+    # Get version of python that pypy is built on (x):
+    local PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2 | cut -d "." -f 1)
+    # Create version string
+    local VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
+
+    # build & push version-specific arch-specific
+    local n=0
+    until [ "$n" -ge "$TOTALTRIES" ]; do
+        docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:${VERSION} --progress plain --push . && break
+        n=$((n+1))
+        sleep 1
+    done
+
 }
 
 echo "========== Building & Pushing i386 =========="
