@@ -51,4 +51,4 @@ Although a `buildx.sh` script is included in the repository, this is set up for 
 
 ## Using
 
-TBC
+TBC, this image is still being developed... Check back soon!
