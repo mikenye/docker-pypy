@@ -89,11 +89,13 @@ RUN set -x && \
 
 # build pypy using bootstrap pypy
 RUN set -x && \
+    uname -m && \
     cd /src/pypy/pypy/goal && \
     /opt/pypy2-bootstrap/bin/pypy ../../rpython/bin/rpython -Ojit targetpypystandalone
 
 # package final pypy
 RUN set -x && \
+    uname -m && \
     cd /src/pypy/pypy/tool/release && \
     /opt/pypy2-bootstrap/bin/pypy package.py --archive-name pypy --targetdir /src/pypyfinal.tar.bz2
 
