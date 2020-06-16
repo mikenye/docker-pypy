@@ -15,44 +15,63 @@ function build_image() {
     done
 }
 
+function check_version_vars() {
+
+    if [ "${PYTHONVER}" == "" ]; then
+        echo "ERROR: PYTHONVER is empty"
+        exit 1
+    fi
+    if [ "${PYPYVER}" == "" ]; then
+        echo "ERROR: PYPYVER is empty"
+        exit 1
+    fi
+
+}
+
 function build_process() {
 
-    # build & push latest arch-specific
+    # build & push "latest"
     VERSION="latest${BUILD_ARCHLABEL}"
     build_image
 
-    # Get latest arch-specific version
+    # Get versions
     docker pull mikenye/pypy:${VERSION}
-
     # Get version of python that pypy is built on (x.x.x):
     PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:${VERSION} --version | grep Python | cut -d " " -f 2)
-    # Get version of pypy:
+    # Get version of pypy (x.x.x):
     PYPYVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:${VERSION} --version | grep PyPy | cut -d " " -f 2)
+    # Make sure we have version data returned
+    check_version_vars
+
+    # build & push "pypyX.X.X-vY.Y.Y"
     # Create version string
     VERSION=pypy${PYTHONVER}-v${PYPYVER}${BUILD_ARCHLABEL}
-
     # build & push version-specific arch-specific
     build_image
 
+    # build & push "pypyX.X.X"
     # Create version string
     VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
-
     # build & push version-specific arch-specific
     build_image
 
+    # build & push "pypyX.X"
     # Get version of python that pypy is built on (x.x):
     PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2 | cut -d "." -f 1,2)
+    # Make sure we have version data returned
+    check_version_vars
     # Create version string
     VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
-
     # build & push version-specific arch-specific
     build_image
 
+    # build & push "pypyX"
     # Get version of python that pypy is built on (x):
     PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2 | cut -d "." -f 1)
+    # Make sure we have version data returned
+    check_version_vars
     # Create version string
     VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
-
     # build & push version-specific arch-specific
     build_image
 
