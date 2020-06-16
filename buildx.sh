@@ -89,12 +89,6 @@ BUILD_ARCHLABEL="_amd64"
 BUILD_CONTEXT="x86_64"
 build_process 2>&1 | awk '{print "[amd64] " $0}'
 
-# echo "========== Building & Pushing armv6 =========="
-# BUILD_PLATFORM="linux/arm/v6"
-# BUILD_ARCHLABEL="_armv6"
-# BUILD_CONTEXT="arm32v7"
-# build_process 2>&1 | awk '{print "[armv6] " $0}'
-
 echo "========== Building & Pushing armv7 =========="
 BUILD_PLATFORM="linux/arm/v7"
 BUILD_ARCHLABEL="_armv7"
