@@ -107,6 +107,7 @@ RUN set -x && \
     apt-get install -y --no-install-recommends \
         tar \
         bzip2 \
+        libexpat1 \
         && \
     tar xvf /src/pypyfinal.tar.bz2 -C /opt && \
     apt-get remove -y \
