@@ -115,4 +115,8 @@ RUN set -x && \
         && \
     apt-get autoremove -y && \
     apt-get clean -y && \
-    rm -rf /src /tmp/* /var/lib/apt/lists/*
+    rm -rf /tmp/* /var/lib/apt/lists/*
+
+ENV PATH="/opt/pypy/bin:${PATH}"
+
+ENTRYPOINT /opt/pypy/bin/pypy3

@@ -3,55 +3,80 @@
 set -x
 
 TOTALTRIES=5
+STARTTIME=$(date)
 
-# build & push i386
-n=0
-until [ "$n" -ge "$TOTALTRIES" ]; do
-    docker buildx build --platform "linux/386" -t mikenye/pypy:latest_i386 --progress plain --push . && break
-    n=$((n+1))
-    sleep 1
-done
+function build_image() {
 
-# build & push amd64
-n=0
-until [ "$n" -ge "$TOTALTRIES" ]; do
-    docker buildx build --platform "linux/amd64" -t mikenye/pypy:latest_amd64 --progress plain --push . && break
-    n=$((n+1))
-    sleep 1
-done
+    # build & push latest arch-specific
+    local n=0
+    until [ "$n" -ge "$TOTALTRIES" ]; do
+        docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:latest${BUILD_ARCHLABEL} --progress plain --push . && break
+        n=$((n+1))
+        sleep 1
+    done
 
-# build & push armv6
-n=0
-until [ "$n" -ge "$TOTALTRIES" ]; do
-    docker buildx build --platform "linux/arm/v6" -t mikenye/pypy:latest_armv6 --progress plain --push . && break
-    n=$((n+1))
-    sleep 1
-done
+    # Get latest arch-specific version
+    docker pull mikenye/pypy:latest_${BUILD_ARCHLABEL}
+    # Get version of python that pypy is built in:
+    local PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2)
+    # Get version of pypy:
+    local PYPYVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep PyPy | cut -d " " -f 2)
+    # Create version string
+    local VERSION=pypy${PYTHONVER}-v${PYPYVER}${BUILD_ARCHLABEL}
 
-# build & push armv7
-n=0
-until [ "$n" -ge "$TOTALTRIES" ]; do
-    docker buildx build --platform "linux/arm/v7" -t mikenye/pypy:latest_armv7 --progress plain --push . && break
-    n=$((n+1))
-    sleep 1
-done
+    # build & push version-specific arch-specific
+    local n=0
+    until [ "$n" -ge "$TOTALTRIES" ]; do
+        docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:${VERSION} --progress plain --push . && break
+        n=$((n+1))
+        sleep 1
+    done
+    
+}
 
-# build & push arm64
-n=0
-until [ "$n" -ge "$TOTALTRIES" ]; do
-    docker buildx build --platform "linux/arm64" -t mikenye/pypy:latest_arm64 --progress plain --push . && break
-    n=$((n+1))
-    sleep 1
-done
+echo "========== Building & Pushing i386 =========="
 
-# build & push multi-arch
-n=0
-until [ "$n" -ge "$TOTALTRIES" ]; do
-    docker buildx build --platform "linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64" -t mikenye/pypy:latest --progress plain --push . && break
-    n=$((n+1))
-    sleep 1
-done
+BUILD_PLATFORM="linux/386"
+BUILD_ARCHLABEL="_i386"
+BUILD_CONTEXT="x86_64"
+build_image
 
-# Get version
-# docker pull mikenye/pypy:latest
-# docker run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest --version | grep PyPy | cut -d " " -f 2
+echo "========== Building & Pushing amd64 =========="
+
+BUILD_PLATFORM="linux/amd64"
+BUILD_ARCHLABEL="_amd64"
+BUILD_CONTEXT="x86_64"
+build_image
+
+echo "========== Building & Pushing armv6 =========="
+
+BUILD_PLATFORM="linux/arm/v6"
+BUILD_ARCHLABEL="_armv6"
+BUILD_CONTEXT="arm32v7"
+build_image
+
+echo "========== Building & Pushing armv7 =========="
+
+BUILD_PLATFORM="linux/arm/v7"
+BUILD_ARCHLABEL="_armv7"
+BUILD_CONTEXT="arm32v7"
+build_image
+
+echo "========== Building & Pushing arm64 =========="
+
+BUILD_PLATFORM="linux/arm64"
+BUILD_ARCHLABEL="_arm64"
+BUILD_CONTEXT="arm64"
+build_image
+
+echo "========== Building & Pushing multi-arch =========="
+
+BUILD_PLATFORM="linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64"
+BUILD_ARCHLABEL=""
+BUILD_CONTEXT="amd64"
+build_image
+
+echo "========== FINALLY FINISHED!!! =========="
+echo Started: ${STARTTIME}
+echo Finished: $(date)
+echo ""
