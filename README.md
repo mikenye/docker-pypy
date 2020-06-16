@@ -25,7 +25,6 @@ It is recommended too use the multi-architecture images above. Should you requir
 The tag names will be appended with `_ARCH`, where `ARCH` is one of the following:
 * `i386` for `linux/386` (x86 32-bit)
 * `amd64` for `linux/amd64` (x86_64)
-* `armv6` for `linux/arm/v6` (ARM 32-bit v6 `armel`)
 * `armv7` for `linux/arm/v7` (ARM 32-bit v7 `armhf`)
 * `arm64` for `linux/arm64` (ARM 64-bit v8 `aarch64`)
 
