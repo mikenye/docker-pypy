@@ -109,7 +109,7 @@ RUN set -x && \
         bzip2 \
         libexpat1 \
         && \
-    tar xvf /src/pypyfinal.tar.bz2 -C /opt && \
+    tar xf /src/pypyfinal.tar.bz2 -C /opt && \
     apt-get remove -y \
         bzip2 \
         && \
