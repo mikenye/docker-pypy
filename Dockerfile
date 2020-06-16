@@ -59,10 +59,6 @@ RUN set -x && \
       bzip2 \
       ca-certificates \
       gcc \
-      python3 \
-      python3-dev \
-      python3-setuptools \
-      python3-wheel \
       libbz2-dev \
       libexpat1-dev \
       libffi-dev \
@@ -75,6 +71,10 @@ RUN set -x && \
       make \
       mercurial \
       pkg-config \
+      python3 \
+      python3-dev \
+      python3-setuptools \
+      python3-wheel \
       tar \
       tk-dev \
       zlib1g-dev \
@@ -107,13 +107,14 @@ COPY --from=pypy_builder /src/pypyfinal.tar.bz2 /src/pypyfinal.tar.bz2
 RUN set -x && \
     apt-get update && \
     apt-get install -y --no-install-recommends \
-        tar \
         bzip2 \
         libexpat1 \
+        tar \
         && \
     tar xf /src/pypyfinal.tar.bz2 -C /opt && \
     apt-get remove -y \
         bzip2 \
+        tar \
         && \
     apt-get autoremove -y && \
     apt-get clean -y && \
