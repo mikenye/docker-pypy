@@ -39,7 +39,7 @@ echo "========== Building & Pushing i386 =========="
 BUILD_PLATFORM="linux/386"
 BUILD_ARCHLABEL="_i386"
 BUILD_CONTEXT="x86_64"
-build_image | awk -W Interactive '{print "[i386] " $0}'
+build_image 2>&1 | awk -W Interactive '{print "[i386] " $0}'
 
 echo "========== Building & Pushing amd64 =========="
 
