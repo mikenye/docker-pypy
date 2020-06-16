@@ -8,7 +8,7 @@ STARTTIME=$(date)
 function build_image() {
 
     # build & push latest arch-specific
-    local n=0
+    n=0
     until [ "$n" -ge "$TOTALTRIES" ]; do
         docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:latest${BUILD_ARCHLABEL} --progress plain --push . && break
         n=$((n+1))
@@ -19,14 +19,14 @@ function build_image() {
     docker pull mikenye/pypy:latest_${BUILD_ARCHLABEL}
 
     # Get version of python that pypy is built on (x.x.x):
-    local PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2)
+    PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2)
     # Get version of pypy:
-    local PYPYVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep PyPy | cut -d " " -f 2)
+    PYPYVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep PyPy | cut -d " " -f 2)
     # Create version string
-    local VERSION=pypy${PYTHONVER}-v${PYPYVER}${BUILD_ARCHLABEL}
+    VERSION=pypy${PYTHONVER}-v${PYPYVER}${BUILD_ARCHLABEL}
 
     # build & push version-specific arch-specific
-    local n=0
+    n=0
     until [ "$n" -ge "$TOTALTRIES" ]; do
         docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:${VERSION} --progress plain --push . && break
         n=$((n+1))
@@ -34,10 +34,10 @@ function build_image() {
     done
 
     # Create version string
-    local VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
+    VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
 
     # build & push version-specific arch-specific
-    local n=0
+    n=0
     until [ "$n" -ge "$TOTALTRIES" ]; do
         docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:${VERSION} --progress plain --push . && break
         n=$((n+1))
@@ -45,12 +45,12 @@ function build_image() {
     done
 
     # Get version of python that pypy is built on (x.x):
-    local PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2 | cut -d "." -f 1,2)
+    PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2 | cut -d "." -f 1,2)
     # Create version string
-    local VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
+    VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
 
     # build & push version-specific arch-specific
-    local n=0
+    n=0
     until [ "$n" -ge "$TOTALTRIES" ]; do
         docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:${VERSION} --progress plain --push . && break
         n=$((n+1))
@@ -58,12 +58,12 @@ function build_image() {
     done
 
     # Get version of python that pypy is built on (x):
-    local PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2 | cut -d "." -f 1)
+    PYTHONVER=$(docker --context=${BUILD_CONTEXT} run --rm -it --entrypoint /opt/pypy/bin/pypy3 mikenye/pypy:latest${BUILD_ARCHLABEL} --version | grep Python | cut -d " " -f 2 | cut -d "." -f 1)
     # Create version string
-    local VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
+    VERSION=pypy${PYTHONVER}${BUILD_ARCHLABEL}
 
     # build & push version-specific arch-specific
-    local n=0
+    n=0
     until [ "$n" -ge "$TOTALTRIES" ]; do
         docker buildx build --platform "${BUILD_PLATFORM}" -t mikenye/pypy:${VERSION} --progress plain --push . && break
         n=$((n+1))
