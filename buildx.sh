@@ -4,6 +4,7 @@ set -x
 
 TOTALTRIES=5
 STARTTIME=$(date)
+EXITCODE=0
 
 function build_image() {
     
@@ -20,10 +21,12 @@ function check_version_vars() {
     if [ "${PYTHONVER}" == "" ]; then
         echo "ERROR: PYTHONVER is empty"
         exit 1
+        EXITCODE=1
     fi
     if [ "${PYPYVER}" == "" ]; then
         echo "ERROR: PYPYVER is empty"
         exit 1
+        EXITCODE=1
     fi
 
 }
@@ -82,30 +85,45 @@ BUILD_PLATFORM="linux/386"
 BUILD_ARCHLABEL="_i386"
 BUILD_CONTEXT="x86_64"
 build_process 2>&1 | awk '{print "[i386] " $0}'
+if [ "$EXITCODE" -ne 0 ]; then
+    exit 1
+fi
 
 echo "========== Building & Pushing amd64 =========="
 BUILD_PLATFORM="linux/amd64"
 BUILD_ARCHLABEL="_amd64"
 BUILD_CONTEXT="x86_64"
 build_process 2>&1 | awk '{print "[amd64] " $0}'
+if [ "$EXITCODE" -ne 0 ]; then
+    exit 1
+fi
 
 echo "========== Building & Pushing armv7 =========="
 BUILD_PLATFORM="linux/arm/v7"
 BUILD_ARCHLABEL="_armv7"
 BUILD_CONTEXT="arm32v7"
 build_process 2>&1 | awk '{print "[armv7] " $0}'
+if [ "$EXITCODE" -ne 0 ]; then
+    exit 1
+fi
 
 echo "========== Building & Pushing arm64 =========="
 BUILD_PLATFORM="linux/arm64"
 BUILD_ARCHLABEL="_arm64"
 BUILD_CONTEXT="arm64"
 build_process 2>&1 | awk '{print "[arm64] " $0}'
+if [ "$EXITCODE" -ne 0 ]; then
+    exit 1
+fi
 
 echo "========== Building & Pushing multi-arch =========="
 BUILD_PLATFORM="linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64"
 BUILD_ARCHLABEL=""
 BUILD_CONTEXT="amd64"
 build_process 2>&1 | awk '{print "[multiarch] " $0}'
+if [ "$EXITCODE" -ne 0 ]; then
+    exit 1
+fi
 
 echo "========== FINALLY FINISHED!!! =========="
 echo Started: ${STARTTIME}
